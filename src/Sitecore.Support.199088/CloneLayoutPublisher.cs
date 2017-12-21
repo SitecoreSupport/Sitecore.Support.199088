@@ -14,9 +14,21 @@
       {
         Item itemToPublish = context.PublishHelper.GetItemToPublish(context.ItemId);
 
-        var itemFromWeb = Database.GetDatabase("web").GetItem(context.ItemId, itemToPublish.Language);
-        var itemFromMaster = Database.GetDatabase("master").GetItem(context.ItemId, itemToPublish.Language);
-        if (itemFromMaster.IsClone)
+        Item itemFromWeb;
+        Item itemFromMaster;
+        if (itemToPublish != null)
+        {
+          itemFromWeb = Database.GetDatabase("web").GetItem(context.ItemId, itemToPublish.Language);
+          itemFromMaster = Database.GetDatabase("master").GetItem(context.ItemId, itemToPublish.Language);
+        }
+        else
+        {
+          itemFromWeb = Database.GetDatabase("web").GetItem(context.ItemId);
+          itemFromMaster = Database.GetDatabase("master").GetItem(context.ItemId);
+        }
+
+        
+        if (itemFromWeb!=null && itemFromMaster!=null && itemFromMaster.IsClone)
         {
           var finalLayoutFromMaster = LayoutField.GetFieldValue(itemFromMaster.Fields[FieldIDs.FinalLayoutField]);
           itemFromWeb.Editing.BeginEdit();
